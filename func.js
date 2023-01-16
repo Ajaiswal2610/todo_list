@@ -61,7 +61,14 @@ var curday = function(sp){
   
 
     itemJsonArray.forEach((element, index) => {
-     
+            class_name = "btn btn-warning"
+            if (element[2]== 'Done'){
+                class_name = "btn btn-success"
+            }
+            else{
+                class_name = "btn btn-warning"
+            }
+
             str += `
                 <tr>
                 <th scope="row">${index + 1}</th>
@@ -70,7 +77,8 @@ var curday = function(sp){
                 <td>${element[3]}</td>
                 <td>${element[4]}</td> 
                 <td><button class="btn btn-sm btn-primary" style = background-color:rgb(70,18,18) onclick="deleted(${index})">Delete</button></td> 
-                <td><button id = "status" class="${element[5]}" onclick="undone_done(${index})">${element[2]}</button></td> 
+                
+                <td><button id = "status" class="${class_name}" onclick="undone_done(${index})">${element[2]}</button></td> 
                 <td><button id = "edit" class="btn btn-sm btn-primary" onclick="edit(${index})">Edit</button></td> 
                 
                 
@@ -84,6 +92,7 @@ var curday = function(sp){
     
     add = document.getElementById('add')
     add.addEventListener("click",getAndupdate);
+
     update()
     function deleted(itemindex){
         itemJsonArrayStr = localStorage.getItem('itemsJson')
@@ -94,18 +103,25 @@ var curday = function(sp){
         update();
     };
 
+    function delete_no_fresh(itemindex){
+        itemJsonArrayStr = localStorage.getItem('itemsJson')
+        itemJsonArray = JSON.parse(itemJsonArrayStr);
+        // delete item index element 
+        itemJsonArray.splice(itemindex,1)
+        localStorage.setItem('itemsJson', JSON.stringify(itemJsonArray))
+
+    }
+
     function undone_done(itemindex){
         itemJsonArrayStr = localStorage.getItem('itemsJson')
         itemJsonArray = JSON.parse(itemJsonArrayStr);
         if (itemJsonArray[itemindex][2] == 'Done'){
             itemJsonArray[itemindex][2] = 'Undone'
-            itemJsonArray[itemindex][5] = 'btn btn-warning'
 
 
         }
         else{
             itemJsonArray[itemindex][2] = 'Done'
-            itemJsonArray[itemindex][5] = 'btn btn-success'
 
 
 
@@ -121,16 +137,32 @@ var curday = function(sp){
         }
        
     }
-
-    function edit(itemindex){
-        var newdesc;
-        var newdesc = prompt("Enter the new description");
-
+    function edit_helper(itemindex){
+        newdesc = document.getElementById('desc')
+        delete_no_fresh(itemindex)
         itemJsonArrayStr = localStorage.getItem('itemsJson')
         itemJsonArray = JSON.parse(itemJsonArrayStr)
         itemJsonArray[itemindex][1] = newdesc
         localStorage.setItem('itemsJson', JSON.stringify(itemJsonArray))
         update();
+        // document.getElementById('add').innerHTML = 'ADD';
+
+    }
+
+    function edit(itemindex){
+
+        itemJsonArrayStr = localStorage.getItem('itemsJson')
+        itemJsonArray = JSON.parse(itemJsonArrayStr)
+        document.getElementById('add').innerHTML = 'Update List';
+        title = itemJsonArray[itemindex][0]
+        desc = itemJsonArray[itemindex][1]
+        document.getElementById('title').value = title
+        document.getElementById('desc').value = desc
+        add = document.getElementById('add')
+        add.addEventListener("click",edit_helper(itemindex));
+    
+        // localStorage.setItem('itemsJson', JSON.stringify(itemJsonArray))
+        // update();
 
     }
    
