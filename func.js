@@ -28,14 +28,26 @@ var curday = function(sp){
         // document.getElementById('desc').reset();
         if (localStorage.getItem('itemsJson')==null){
                 itemJsonArray = [];
-                itemJsonArray.push([tit, desc,'UnDone',today,deadl,'btn btn-warning']);
+                let entry = {};
+                entry['title'] = tit;
+                entry['description'] = desc;
+                entry['status'] = 'UnDone';
+                entry['e_date'] = today;
+                entry['deadl'] = deadl;
+
+                itemJsonArray.push(entry);
                 localStorage.setItem('itemsJson', JSON.stringify(itemJsonArray))
             }
             else{
                 itemJsonArrayStr = localStorage.getItem('itemsJson')
-                console.log(itemJsonArrayStr)
                 itemJsonArray = JSON.parse(itemJsonArrayStr);
-                itemJsonArray.push([tit, desc,'UnDone',today, deadl,'btn btn-warning']);
+                let entry = {};
+                entry['title'] = tit;
+                entry['description'] = desc;
+                entry['status'] = 'UnDone';
+                entry['e_date'] = today;
+                entry['deadl'] = deadl;
+                itemJsonArray.push(entry);
                 localStorage.setItem('itemsJson', JSON.stringify(itemJsonArray))
             }
         update();
@@ -62,7 +74,7 @@ var curday = function(sp){
 
     itemJsonArray.forEach((element, index) => {
             class_name = "btn btn-warning"
-            if (element[2]== 'Done'){
+            if (element['status']== 'Done'){
                 class_name = "btn btn-success"
             }
             else{
@@ -72,13 +84,13 @@ var curday = function(sp){
             str += `
                 <tr>
                 <th scope="row">${index + 1}</th>
-                <td>${element[0]}</td>
-                <td>${element[1]}</td> 
-                <td>${element[3]}</td>
-                <td>${element[4]}</td> 
+                <td>${element['title']}</td>
+                <td>${element['description']}</td> 
+                <td>${element['e_date']}</td>
+                <td>${element['deadl']}</td> 
                 <td><button class="btn btn-sm btn-primary" style = background-color:rgb(70,18,18) onclick="deleted(${index})">Delete</button></td> 
                 
-                <td><button id = "status" class="${class_name}" onclick="undone_done(${index})">${element[2]}</button></td> 
+                <td><button id = "status" class="${class_name}" onclick="undone_done(${index})">${element['status']}</button></td> 
                 <td><button id = "edit" class="btn btn-sm btn-primary" onclick="edit(${index})">Edit</button></td> 
                 
                 
@@ -115,13 +127,13 @@ var curday = function(sp){
     function undone_done(itemindex){
         itemJsonArrayStr = localStorage.getItem('itemsJson')
         itemJsonArray = JSON.parse(itemJsonArrayStr);
-        if (itemJsonArray[itemindex][2] == 'Done'){
-            itemJsonArray[itemindex][2] = 'Undone'
+        if (itemJsonArray[itemindex]['status'] == 'Done'){
+            itemJsonArray[itemindex]['status'] = 'Undone'
 
 
         }
         else{
-            itemJsonArray[itemindex][2] = 'Done'
+            itemJsonArray[itemindex]['status'] = 'Done'
 
 
 
@@ -138,13 +150,15 @@ var curday = function(sp){
        
     }
     function edit_helper(itemindex){
-        newdesc = document.getElementById('desc')
-        delete_no_fresh(itemindex)
+        newdesc = document.getElementById('desc');
+        console.log(newdesc)
         itemJsonArrayStr = localStorage.getItem('itemsJson')
         itemJsonArray = JSON.parse(itemJsonArrayStr)
-        itemJsonArray[itemindex][1] = newdesc
+        itemJsonArray[itemindex]['description'] = newdesc
+        delete_no_fresh(itemindex)
+
         localStorage.setItem('itemsJson', JSON.stringify(itemJsonArray))
-        update();
+        // update();
         // document.getElementById('add').innerHTML = 'ADD';
 
     }
@@ -154,8 +168,8 @@ var curday = function(sp){
         itemJsonArrayStr = localStorage.getItem('itemsJson')
         itemJsonArray = JSON.parse(itemJsonArrayStr)
         document.getElementById('add').innerHTML = 'Update List';
-        title = itemJsonArray[itemindex][0]
-        desc = itemJsonArray[itemindex][1]
+        title = itemJsonArray[itemindex]['title']
+        desc = itemJsonArray[itemindex]['description']
         document.getElementById('title').value = title
         document.getElementById('desc').value = desc
         add = document.getElementById('add')
