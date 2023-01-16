@@ -1,0 +1,67 @@
+function getAndupdate(){
+    tit = document.getElementById('title').value;
+    desc = document.getElementById('desc').value;
+    // document.getElementById('title').reset();
+    // document.getElementById('desc').reset();
+    if (localStorage.getItem('itemsJson')==null){
+            itemJsonArray = [];
+            itemJsonArray.push([tit, desc]);
+            localStorage.setItem('itemsJson', JSON.stringify(itemJsonArray))
+        }
+        else{
+            itemJsonArrayStr = localStorage.getItem('itemsJson')
+            console.log(itemJsonArrayStr)
+            itemJsonArray = JSON.parse(itemJsonArrayStr);
+            itemJsonArray.push([tit, desc]);
+            localStorage.setItem('itemsJson', JSON.stringify(itemJsonArray))
+        }
+    update();
+
+//populate the table 
+    }
+function update(){
+    if (localStorage.getItem('itemsJson')==null){
+            itemJsonArray = [];
+            localStorage.setItem('itemsJson', JSON.stringify(itemJsonArray))
+        }
+    else{
+        itemJsonArrayStr = localStorage.getItem('itemsJson')
+        itemJsonArray = JSON.parse(itemJsonArrayStr);
+       
+    }
+        
+    let tableBody = document.getElementById("tableBody");
+let str = "";
+itemJsonArray.forEach((element, index) => {
+        str += `
+            <tr>
+            <th scope="row">${index + 1}</th>
+            <td>${element[0]}</td>
+            <td>${element[1]}</td> 
+            <td><button class="btn btn-sm btn-primary" onclick="deleted(${index})">Delete</button></td> 
+            </tr>`; 
+        });
+        console.log(str)
+        tableBody.innerHTML = str;
+}
+
+
+
+add = document.getElementById('add')
+add.addEventListener("click",getAndupdate);
+update()
+function deleted(itemindex){
+    itemJsonArrayStr = localStorage.getItem('itemsJson')
+    itemJsonArray = JSON.parse(itemJsonArrayStr);
+    // delete item index element 
+    itemJsonArray.splice(itemindex,1)
+    localStorage.setItem('itemsJson', JSON.stringify(itemJsonArray))
+    update();
+};
+function clearstor(){
+    if (confirm("Do you want to clear list?")){
+        localStorage.clear();
+    update();
+    }
+   
+}
