@@ -22,7 +22,7 @@ var curday = function(sp){
     }
 
     function getAndupdate2(){
-
+        
         
         // document.getElementById('title').reset();
         // document.getElementById('desc').reset();
@@ -96,14 +96,14 @@ var curday = function(sp){
                 
                 </tr>`; 
             });
-            console.log(str)
             tableBody.innerHTML = str;
     }
 
 
-    
     add = document.getElementById('add')
     add.addEventListener("click",getAndupdate);
+    
+ 
 
     update()
     function deleted(itemindex){
@@ -115,14 +115,14 @@ var curday = function(sp){
         update();
     };
 
-    function delete_no_fresh(itemindex){
-        itemJsonArrayStr = localStorage.getItem('itemsJson')
-        itemJsonArray = JSON.parse(itemJsonArrayStr);
-        // delete item index element 
-        itemJsonArray.splice(itemindex,1)
-        localStorage.setItem('itemsJson', JSON.stringify(itemJsonArray))
+    // function delete_no_fresh(itemindex){
+    //     itemJsonArrayStr = localStorage.getItem('itemsJson')
+    //     itemJsonArray = JSON.parse(itemJsonArrayStr);
+    //     // delete item index element 
+    //     itemJsonArray.splice(itemindex,1)
+    //     localStorage.setItem('itemsJson', JSON.stringify(itemJsonArray))
 
-    }
+    // }
 
     function undone_done(itemindex){
         itemJsonArrayStr = localStorage.getItem('itemsJson')
@@ -149,19 +149,21 @@ var curday = function(sp){
         }
        
     }
-    function edit_helper(itemindex){
-        newdesc = document.getElementById('desc');
-        console.log(newdesc)
+    function edit_entry(itemindex){
+        // deleted(itemindex)
+        newdesc = document.getElementById('desc').value;
         itemJsonArrayStr = localStorage.getItem('itemsJson')
         itemJsonArray = JSON.parse(itemJsonArrayStr)
         itemJsonArray[itemindex]['description'] = newdesc
-        delete_no_fresh(itemindex)
-
+        itemJsonArray[itemindex]['title'] = document.getElementById('title').value;
+        itemJsonArray[itemindex]['deadl'] = document.getElementById('deadline').value;
+        // console.log(itemJsonArray)
         localStorage.setItem('itemsJson', JSON.stringify(itemJsonArray))
-        // update();
-        // document.getElementById('add').innerHTML = 'ADD';
+        update();
+        // // document.getElementById('add').innerHTML = 'ADD';
 
     }
+  
 
     function edit(itemindex){
 
@@ -170,11 +172,17 @@ var curday = function(sp){
         document.getElementById('add').innerHTML = 'Update List';
         title = itemJsonArray[itemindex]['title']
         desc = itemJsonArray[itemindex]['description']
+        deadline = itemJsonArray[itemindex]['deadl']
+        document.getElementById('deadline').value  = deadline
         document.getElementById('title').value = title
         document.getElementById('desc').value = desc
-        add = document.getElementById('add')
-        add.addEventListener("click",edit_helper(itemindex));
-    
+        upd = document.getElementById('add')
+        upd.removeEventListener("click",getAndupdate)
+        upd.addEventListener("click", entry_call);
+        function entry_call(){
+        edit_entry(itemindex)
+        }
+
         // localStorage.setItem('itemsJson', JSON.stringify(itemJsonArray))
         // update();
 
